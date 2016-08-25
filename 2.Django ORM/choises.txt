@@ -1,0 +1,48 @@
+4. Предположим имеется модель:
+class Person(models.Model):
+    name = models.CharField('Item', max_length=100)
+    birthday = models.DateField(...)
+
+Как определить поле birthday, чтобы в django.admin интефейсе нельзя было чтобы поле было пустое, но с помощью Django ORM все же можно было создать экземпляр с пустым значением birthday. Person.objects.create(name='Name 1').
+
+Варианты:
+
+    birthday = models.DateField(null=True, blank=True)
+    birthday = models.DateField(null=False, blank=True)
+    birthday = models.DateField(null=True, blank=False)
+    birthday = models.DateField(null=False, blank=False)
+
+Ответ:
+    birthday = models.DateField(null=True, blank=False)
+
+
+
+
+5. Предположим имеется model с переопределенным manager:
+
+class CustomManager(models.Manager):
+    def get_queryset(self):
+        return CustomQuerySet(self.model, using=self._db)
+
+class Item(models.Model):
+    name = models.CharField('Item', max_length=100)
+    active = models.BooleanField('Active', default=True)
+    objects = CustomManager()
+
+Необходимо чтобы работал сделющий код:
+
+Item.objects.filter(pk=1).delete() - Устанавливал атрибут “active” - False на соответствующей записи.
+
+Item.objects.filter(pk=1).delete_real() - Физически удалял запись из базы данных.
+
+
+Ответ:
+    Нужно переопределить метод delete, чтобы выставлял active=False, а в методе delete_real использовать delete из QuerySet:
+B.
+class CustomQuerySet(QuerySet):
+    def delete(self):
+        self.update(active=False)
+
+    def delete_real(self):
+        super(CustomQuerySet, self).delete()
+
