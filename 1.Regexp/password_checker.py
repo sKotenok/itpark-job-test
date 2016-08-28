@@ -9,14 +9,29 @@
  - Содержать хотя бы 1 символ в нижнем регистре
  - Содержать хотя бы 1 цифровой символ
 """
+import re
+
 
 def password_checker(passwd):
-    pass
+    if not (7 < len(passwd) < 21):
+        return False
+
+    UPPER = set('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+    LOWER = set('abcdefghijklmnopqrstuvwxyz')
+    DIGITS = set('1234567890')
+    for test_set in UPPER, LOWER, DIGITS:
+        for letter in passwd:
+            if letter in test_set:
+                break
+        else:
+            return False
     return True
 
+
 def password_checker_re(passwd):
-    pass
-    return True
+    passwd_re = re.compile(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,20}$')
+    return True if passwd_re.match(passwd) else False
+
 
 # Tests
 
@@ -32,6 +47,7 @@ class TestPasswordChecker(unittest.TestCase):
                 'aaaa aaaa aaaa aaA1a',     # 20 symbols
             ]
         self.incorrect_passwords = [
+                'wrong password',
                 'A1aaaaa',                  # to low, need at least 8 symbols
                 'A1aa aaaa aaaa aaaa a',    # > 20 symbols
                 'Aaaaaaaaa',                # do not have numbers
@@ -41,19 +57,19 @@ class TestPasswordChecker(unittest.TestCase):
 
     def test_correct_passwords(self):
         for p in self.correct_passwords:
-            self.assertTrue(password_checker(p))
+            self.assertTrue(password_checker(p), 'Failed on ' + p)
 
     def test_incorrect_passwords(self):
         for p in self.incorrect_passwords:
-            self.assertFalse(password_checker(p))
+            self.assertFalse(password_checker(p), 'Failed on ' + p)
 
     def test_correct_passwords_re(self):
         for p in self.correct_passwords:
-            self.assertTrue(password_checker_re(p))
+            self.assertTrue(password_checker_re(p), 'Failed on ' + p)
 
     def test_incorrect_passwords_re(self):
         for p in self.incorrect_passwords:
-            self.assertFalse(password_checker_re(p))
+            self.assertFalse(password_checker_re(p), 'Failed on ' + p)
 
 
 if __name__ == '__main__':
