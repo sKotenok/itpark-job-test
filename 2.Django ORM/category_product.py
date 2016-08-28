@@ -24,5 +24,28 @@ class Product(models.Model):
 
 # Views:
 
+def test():
+    # 1.
+    p1 = Product.objects.filter(price__gte=100) \
+        .group_by('-category') \
+        .annotate(p_count=Count())
+
+    for product in p1:
+        print(product)
+
+    # 2.
+    p2 = p1.filter(p_count__gt=10)
+
+    for product in p2:
+        print(product)
+
+    #3. Написать код python, который выводит в консоль перечень всех товаров. Каждая строка должна содержать следующие данные:
+    #Название категории товараю
+    #наименование товара.
+    #Цена.
+    p3 = Product.objects.all().values('category__name', 'name', 'price')
+
+    for product in p3:
+        print(product)
 
 
