@@ -113,10 +113,13 @@ class ParseThread(threading.Thread):
 
 def main():
     xml_files = get_xml_files(PATH)
+    config = {
+        'uri': SERVER,
+    }
 
     threads = []
     for f in xml_files:
-        t = ParseThread(f, parse_gateway_nodes, send_gateway_nodes, {'uri': SERVER, })
+        t = ParseThread(f, parse_gateway_nodes, send_gateway_nodes, config)
         t.start()
         threads.append(t)
 
