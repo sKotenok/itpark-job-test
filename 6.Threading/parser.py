@@ -65,6 +65,7 @@ else:
 
 
 def parse_gateway_nodes(xml_file, config):
+    """Парсит xml-файл, возвращает словарь в заданном формате"""
     xml_obj = ElementTree.parse(xml_file)
     root = xml_obj.getroot()
     if root.tag != 'poll':
@@ -84,7 +85,10 @@ def parse_gateway_nodes(xml_file, config):
 
 
 def send_gateway_nodes(serializable_data, config):
+    """Отправляет данные на заданный URL"""
     uri = config['uri'] if 'uri' in config else 'http://127.0.0.1'
+
+    ## Точно не знаю, JSON отправлять или обычный POST, поэтому можно задать в конфиге.
     content_type = config['content-type'] if 'content-type' in config else 'application/json'
 
     if content_type == 'application/json':

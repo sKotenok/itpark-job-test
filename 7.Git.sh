@@ -14,7 +14,7 @@ git log
     # commit 8ff4b First Commit
 git reset --hard 8ff4b
 
-## Если 2й коммит уже запушен в паблик, просто отменить его нельзя
+## Если 2й коммит уже запушен в паблик, взять и отменить его нельзя
 git revert 8ff4b
 git commit -m "Previous commit was crap, undo it"
 git push
