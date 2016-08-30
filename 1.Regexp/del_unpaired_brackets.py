@@ -13,8 +13,12 @@
 """
 # Code
 import re
+import logging
+
+logging.basicConfig(filename='myapp.log', level=logging.INFO)
 
 def del_unpaired_brackets(input_str):
+    logging.info('input string: {}'.format(input_str))
     str_end = False
     for i, s in enumerate(input_str):
         if str_end:
@@ -23,13 +27,17 @@ def del_unpaired_brackets(input_str):
         elif s == '(':
             str_end = i
     result = input_str[0:str_end] if str_end else input_str
+    logging.info('result: {}'.format(result))
     return result
 
 
 def del_unpaired_brackets_re(input_str):
+    logging.info('input string: {}'.format(input_str))
     brackets_re = re.compile(r'(?:(?:\((?=.*\)))|[^\(])*')
     result = brackets_re.match(input_str)
-    return result.group() if result else ''
+    result = result.group() if result else ''
+    logging.info('result: {}'.format(result))
+    return result
 
 
 # Tests.
